@@ -1,8 +1,9 @@
 #——————————————————————————————–#
 # Script_Name : ShadowCopyDel.ps1
 # Description : Deletes older versions of shadow copies to free up space
-# Version : 1.0
+# Version : 1.1
 # Changes:
+# v1.1 Parameterized Drive that holds the shadow copy
 # Date : September 2019
 # Created by Arjun N
 # Disclaimer:
@@ -13,14 +14,18 @@
 # OUT OF OR IN CONNECTION WITH THE SCRIPT OR THE USE OR OTHER DEALINGS IN THE SCRIPT.
 #——————————————————————————————-#
 
+
 #Change this value as required (in GBs)
 $MinFreeSpace_GB = 40
+
+#Logical drive that holds the shadows
+$ShadoDrive = "F:"
 
 $loopthrough = {
 $DriveMinFree = [string]::IsNullOrEmpty((Get-CimInstance -ClassName CIM_LogicalDisk |
     Where-Object {
     # Substitute 'F:' with the respective logical drive
-        $_.DeviceID -eq 'F:' -and
+        $_.DeviceID -eq $ShadoDrive -and
         $_.FreeSpace -lt $MinFreeSpace_GB * 1GB
         }))
 
@@ -42,7 +47,7 @@ if ($DriveMinFree)
 
 $shadel = {
 $shadscript = "./del.shad"
-"delete shadows oldest f:" | set-content $shadscript
+"delete shadows oldest $ShadoDrive " | set-content $shadscript
 
 diskshadow /s $shadscript
 remove-item $shadscript
