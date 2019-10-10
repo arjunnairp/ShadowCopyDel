@@ -3,7 +3,8 @@
 # Description : Deletes older versions of shadow copies to free up space
 # Version : 1.1
 # Changes:
-# v1.1 Parameterized Drive that holds the shadow copy
+# v1.1 Parameterized Drive that holds the shadow copies
+# v1.2 Tuned reporting typos - Oct 2019
 # Date : September 2019
 # Created by Arjun N
 # Disclaimer:
@@ -31,7 +32,7 @@ $DriveMinFree = [string]::IsNullOrEmpty((Get-CimInstance -ClassName CIM_LogicalD
 
 if ($DriveMinFree)
     {
-    'The C: drive has at least {0} GB free.' -f $MinFreeSpace_GB
+    'The {0} drive has at least {1} GB free.' -f $ShadoDrive, $MinFreeSpace_GB
     Write-Host "Hard Disk Space is greater than $MinFreeSpace_GB GB"
     exit
     }
@@ -40,7 +41,7 @@ if ($DriveMinFree)
     Write-Host "Hard Disk Space is less than $MinFreeSpace_GB"
     &$shadel
     &$loopthrough
-    Write-Warning ('Low free space on Drive C:!')
+    Write-Warning -Message "Low free space on $ShadoDrive"
     }
 
 }
